@@ -42,10 +42,9 @@ public class MyNotepad extends JFrame {
             itemZoomIn, itemZoomOut, itemRestore,
             itemHelp, itemSend, itemAbout;
     private JTextArea textEditor;
-    private int size = 12;
+    private int size = 14;
     private File currentFile;
     private int lastIndex = -1;
-    private boolean searchDirectionUp = false;
     public MyNotepad(String title) {
         super(title);
         createMenu();
@@ -253,37 +252,57 @@ public class MyNotepad extends JFrame {
         findDialog.setVisible(true);
     }
 
-    public void findText(String searchString) {
+    public void findTextDown(String searchString) {
         String text = textEditor.getText();
 
         String textLower = text.toLowerCase();
         String searchStringLower = searchString.toLowerCase();
-
-        if (searchDirectionUp) { // Nếu tìm kiếm theo chiều ngược
-            if (lastIndex == -1) {
-                lastIndex = textLower.lastIndexOf(searchStringLower); // Tìm lần đầu tiên từ cuối lên
-            } else {
-                lastIndex = textLower.lastIndexOf(searchStringLower, lastIndex - 1); // Tìm lần tiếp theo
-            }
-        } else { // Nếu tìm kiếm theo chiều xuôi
-            if (lastIndex == -1) {
-                lastIndex = textLower.indexOf(searchStringLower); // Tìm lần đầu tiên từ đầu xuống
-            } else {
-                lastIndex = textLower.indexOf(searchStringLower, lastIndex + searchString.length()); // Tìm lần tiếp theo
-            }
+        
+        if(searchStringLower.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Search string cannot be empty!");
+            return;
         }
-
-        if (lastIndex != -1) {
+        
+        if(lastIndex == -1){
+            lastIndex = textLower.indexOf(searchStringLower);
+        }
+        else{
+            lastIndex = textLower.indexOf(searchStringLower, lastIndex + searchString.length());
+        }
+        if(lastIndex != -1){
             textEditor.setCaretPosition(lastIndex);
             textEditor.select(lastIndex, lastIndex + searchString.length());
-        } else {
-            JOptionPane.showMessageDialog(this, "Can't find '" + searchString + "'");
-            lastIndex = -1; // Đặt lại vị trí nếu không tìm thấy
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Can't find '" +searchString + "'");
+            lastIndex = -1;
         }
     }
-    public void setSearchDirectionUp(boolean isUp) {
-    searchDirectionUp = isUp;
-    lastIndex = -1; // Đặt lại lastIndex khi thay đổi hướng tìm kiếm
+    public void findTextUp(String searchString){
+        String text = textEditor.getText();
+
+        String textLower = text.toLowerCase();
+        String searchStringLower = searchString.toLowerCase();
+        
+        if(searchStringLower.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Search string cannot be empty!");
+            return;
+        }
+        
+        if(lastIndex == -1){
+            lastIndex = textLower.lastIndexOf(searchStringLower);
+        }
+        else{
+            lastIndex = textLower.lastIndexOf(searchStringLower, lastIndex - 1);
+        }
+        if(lastIndex != -1){
+            textEditor.setCaretPosition(lastIndex);
+            textEditor.select(lastIndex, lastIndex + searchString.length());
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Can't find '" +searchString + "'");
+            lastIndex = -1;
+        }
     }
     private void showReplaceDialog() {
         JReplaceDialog replaceDialog = new JReplaceDialog(this, true);
@@ -291,7 +310,61 @@ public class MyNotepad extends JFrame {
     }
 
     public void replaceText(String firstText, String endText) {
+        String text = textEditor.getText();
 
+        String textLower = text.toLowerCase();
+        String firstTextLower = firstText.toLowerCase();
+        
+        if(firstText.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Search string cannot be empty!");
+            return;
+        }
+        if(lastIndex == -1){
+            lastIndex = textLower.indexOf(firstTextLower);
+        }
+        else{
+            lastIndex = textLower.indexOf(firstTextLower, lastIndex + firstText.length());
+        }
+        if(lastIndex != -1){
+            textEditor.setCaretPosition(lastIndex);
+            textEditor.select(lastIndex, lastIndex + firstText.length());
+            // Thay đổi trên văn bản
+            String updatedText = text.replaceFirst(firstText, endText);
+            textEditor.setText(updatedText);
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Can't find '" +firstText + "'");
+            lastIndex = -1;
+        }
     }
+    public void replaceAllText(String firstText, String endText) {
+        String text = textEditor.getText();
+
+        String textLower = text.toLowerCase();
+        String firstTextLower = firstText.toLowerCase();
+        
+        if(firstText.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Search string cannot be empty!");
+            return;
+        }
+        if(lastIndex == -1){
+            lastIndex = textLower.indexOf(firstTextLower);
+        }
+        else{
+            lastIndex = textLower.indexOf(firstTextLower, lastIndex + firstText.length());
+        }
+        if(lastIndex != -1){
+            textEditor.setCaretPosition(lastIndex);
+            textEditor.select(lastIndex, lastIndex + firstText.length());
+            // Thay đổi trên văn bản
+            String updatedText = text.replace(firstText, endText);
+            textEditor.setText(updatedText);
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Can't find '" +firstText + "'");
+            lastIndex = -1;
+        }
+    }
+    
     
 }

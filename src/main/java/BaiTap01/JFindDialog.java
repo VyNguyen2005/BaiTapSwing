@@ -86,16 +86,18 @@ public class JFindDialog extends JDialog{
 
     private void createEventProcess() {
         btnSearch.addActionListener((e) -> {
-            parent.findText(txtEnterText.getText());
-        });
+        if (radDown.isSelected()) {
+            parent.findTextDown(txtEnterText.getText());
+        } 
+        else if (radUp.isSelected()) {
+            parent.findTextUp(txtEnterText.getText());
+        } 
+        else {
+            parent.findTextDown(txtEnterText.getText());
+        }
+    });
         btnCancel.addActionListener((e) -> {
             this.dispose();
-        });
-        radUp.addActionListener((e) -> {
-            parent.findText(txtEnterText.getText());
-        });
-        radDown.addActionListener((e) -> {
-            parent.findText(txtEnterText.getText());
         });
     }
     

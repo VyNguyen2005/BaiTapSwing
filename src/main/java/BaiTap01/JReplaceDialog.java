@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 public class JReplaceDialog extends JDialog{
     private JLabel lblFirst, lblEnd;
     private JTextField txtFirst, txtEnd;
-    private JButton btnReplace, btnReplaceAll;
+    private JButton btnFind,  btnReplace, btnReplaceAll, btnCancel;
     private MyNotepad parent;
     public JReplaceDialog(Frame owner, boolean modal) {
         super(owner, modal);
@@ -26,7 +26,7 @@ public class JReplaceDialog extends JDialog{
         parent = (MyNotepad)owner;
         createGUI();
         createEventProcess();
-        setSize(450, 230);
+        setSize(480, 230);
         setLocationRelativeTo(owner);
     }
     
@@ -40,29 +40,39 @@ public class JReplaceDialog extends JDialog{
         JPanel panel = new JPanel();
         panel.setLayout(null);
         
-        panel.add(lblFirst = new JLabel("Nội dung trước: "));
-        panel.add(lblEnd = new JLabel("Nội dung sau: "));
+        panel.add(lblFirst = new JLabel("Find what: "));
+        panel.add(lblEnd = new JLabel("Replace with: "));
         panel.add(txtFirst = new JTextField());
         panel.add(txtEnd = new JTextField());
-        panel.add(btnReplace = new JButton("Thay thế"));
-        panel.add(btnReplaceAll = new JButton("Thay thế tất cả"));
+        panel.add(btnFind = new JButton("Find Next"));
+        panel.add(btnReplace = new JButton("Replace"));
+        panel.add(btnReplaceAll = new JButton("Replace All"));
+        panel.add(btnCancel = new JButton("Cancel"));
         
-        lblFirst.setBounds(30, 20, 120, 30);
-        txtFirst.setBounds(180, 20, 200, 30);
-        
-        lblEnd.setBounds(30, 66, 140, 30);
-        txtEnd.setBounds(180, 65, 200, 30);
-        
-        btnReplace.setBounds(100, 120, 100, 30);
-        btnReplaceAll.setBounds(220, 120, 130, 30);
+        lblFirst.setBounds(10, 20, 80, 30);
+        txtFirst.setBounds(90, 20, 250, 30);
+        lblEnd.setBounds(10, 60, 80, 30);
+        txtEnd.setBounds(90, 60, 250, 30);
+        btnFind.setBounds(350, 20, 100, 30);
+        btnReplace.setBounds(350, 60, 100, 30);
+        btnReplaceAll.setBounds(350, 100, 100, 30);
+        btnCancel.setBounds(350, 140, 100, 30);
         
         add(panel);
     }
 
     private void createEventProcess() {
+        btnFind.addActionListener((e) -> {
+            parent.findTextDown(txtFirst.getText());
+        });
         btnReplace.addActionListener((e) -> {
             parent.replaceText(txtFirst.getText(), txtEnd.getText());
         });
-        
+        btnReplaceAll.addActionListener((e) -> {
+            parent.replaceAllText(txtFirst.getText(), txtEnd.getText());
+        });
+        btnCancel.addActionListener((e) -> {
+            this.dispose();
+        });
     }
 }
