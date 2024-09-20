@@ -6,11 +6,19 @@ package BaiTap01;
 
 import java.awt.Dialog;
 import java.awt.Frame;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 /**
  *
@@ -20,6 +28,8 @@ public class JFindDialog extends JDialog{
     private JLabel lblEnterText;
     private JTextField txtEnterText;
     private JButton btnSearch, btnCancel;
+    private JRadioButton radUp, radDown;
+    private ButtonGroup buttonGroup;
     private MyNotepad parent;
     public JFindDialog(Frame owner, boolean modal) {
         super(owner, modal);
@@ -27,7 +37,7 @@ public class JFindDialog extends JDialog{
         parent = (MyNotepad)owner;
         createGUI();
         createEventProcess();
-        setSize(450, 170);
+        setSize(480, 180);
         setLocationRelativeTo(owner);
     }
     
@@ -41,16 +51,37 @@ public class JFindDialog extends JDialog{
         JPanel panel = new JPanel();
         panel.setLayout(null);
         
-        panel.add(lblEnterText = new JLabel("Nhập nội dung tìm kiếm: "));
+        panel.add(lblEnterText = new JLabel("Find what: "));
         panel.add(txtEnterText = new JTextField());
-        panel.add(btnSearch = new JButton("Tìm kiếm"));
-        panel.add(btnCancel = new JButton("Hủy"));
+        panel.add(btnSearch = new JButton("Find Next"));
+        panel.add(btnCancel = new JButton("Cancel"));
+        radUp = new JRadioButton("Up");
+        radDown = new JRadioButton("Down");
+        JPanel panel2 = new JPanel();
+        panel2.setLayout(null);
+                
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(radUp);
+        buttonGroup.add(radDown);
         
-        lblEnterText.setBounds(30, 20, 140, 30);
-        txtEnterText.setBounds(180, 20, 200, 30);
-        btnSearch.setBounds(100, 70, 100, 30);
-        btnCancel.setBounds(220, 70, 100, 30);
+        
+        JPanel directionPanel = new JPanel();
+        directionPanel.setLayout(new GridLayout(1, 2)); 
+        directionPanel.setBounds(210, 60, 130, 50);
+        directionPanel.setBorder(BorderFactory.createTitledBorder("Direction")); 
+        
+        directionPanel.add(radUp);
+        directionPanel.add(radDown);
+
+        panel.add(directionPanel);
+
+        lblEnterText.setBounds(10, 20, 80, 30);
+        txtEnterText.setBounds(90, 20, 250, 30);
+        btnSearch.setBounds(350, 20, 100, 30);
+        btnCancel.setBounds(350, 60, 100, 30);
+        
         add(panel);
+        
     }
 
     private void createEventProcess() {
@@ -59,6 +90,12 @@ public class JFindDialog extends JDialog{
         });
         btnCancel.addActionListener((e) -> {
             this.dispose();
+        });
+        radUp.addActionListener((e) -> {
+            parent.findText(txtEnterText.getText());
+        });
+        radDown.addActionListener((e) -> {
+            parent.findText(txtEnterText.getText());
         });
     }
     

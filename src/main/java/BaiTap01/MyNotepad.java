@@ -44,6 +44,8 @@ public class MyNotepad extends JFrame {
     private JTextArea textEditor;
     private int size = 12;
     private File currentFile;
+    private int lastIndex = -1;
+    private boolean searchDirectionUp = false;
     public MyNotepad(String title) {
         super(title);
         createMenu();
@@ -214,10 +216,10 @@ public class MyNotepad extends JFrame {
         }
     }
 
-    private void saveAsFile(){
+    private void saveAsFile() {
         // Hộp thoại tập tin
         JFileChooser fileChooser = new JFileChooser();
-        if(fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION){
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 currentFile = fileChooser.getSelectedFile();
                 FileOutputStream fos = new FileOutputStream(currentFile);
@@ -250,27 +252,46 @@ public class MyNotepad extends JFrame {
         JFindDialog findDialog = new JFindDialog(this, true);
         findDialog.setVisible(true);
     }
-    public void findText(String searchString){
+
+    public void findText(String searchString) {
         String text = textEditor.getText();
-        
+
         String textLower = text.toLowerCase();
         String searchStringLower = searchString.toLowerCase();
-        
-        int index = textLower.indexOf(searchStringLower);
-        if(index != -1){
-            textEditor.setCaretPosition(index);
-            textEditor.select(index, index + searchString.length());
+
+        if (searchDirectionUp) { // Nếu tìm kiếm theo chiều ngược
+            if (lastIndex == -1) {
+                lastIndex = textLower.lastIndexOf(searchStringLower); // Tìm lần đầu tiên từ cuối lên
+            } else {
+                lastIndex = textLower.lastIndexOf(searchStringLower, lastIndex - 1); // Tìm lần tiếp theo
+            }
+        } else { // Nếu tìm kiếm theo chiều xuôi
+            if (lastIndex == -1) {
+                lastIndex = textLower.indexOf(searchStringLower); // Tìm lần đầu tiên từ đầu xuống
+            } else {
+                lastIndex = textLower.indexOf(searchStringLower, lastIndex + searchString.length()); // Tìm lần tiếp theo
+            }
         }
-        else{
-            JOptionPane.showMessageDialog(this, "Không tìm thấy nội dung!");
+
+        if (lastIndex != -1) {
+            textEditor.setCaretPosition(lastIndex);
+            textEditor.select(lastIndex, lastIndex + searchString.length());
+        } else {
+            JOptionPane.showMessageDialog(this, "Can't find '" + searchString + "'");
+            lastIndex = -1; // Đặt lại vị trí nếu không tìm thấy
         }
     }
-
+    public void setSearchDirectionUp(boolean isUp) {
+    searchDirectionUp = isUp;
+    lastIndex = -1; // Đặt lại lastIndex khi thay đổi hướng tìm kiếm
+    }
     private void showReplaceDialog() {
         JReplaceDialog replaceDialog = new JReplaceDialog(this, true);
         replaceDialog.setVisible(true);
     }
-    public void replaceText(String firstText, String endText){
-        
+
+    public void replaceText(String firstText, String endText) {
+
     }
+    
 }
